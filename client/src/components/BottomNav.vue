@@ -2,8 +2,8 @@
   <v-bottom-nav
     :active="bottomNavValue"
     :value="true"
-    absolute
     fixed
+    class="fixed-bottom"
     color="transparent"
   >
     <v-btn
@@ -56,3 +56,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .fixed-bottom{
+    bottom:0
+  }
+</style>
