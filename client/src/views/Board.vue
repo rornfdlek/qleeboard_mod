@@ -2,7 +2,7 @@
   <v-app>
     <v-toolbar
       app
-      height="30"
+      height="40"
       class="back-white"
     >
       <v-btn
@@ -14,7 +14,7 @@
       </v-btn>
       <v-layout
         justify-center
-        class="title primary--text"
+        class="title primary--text font-weight-bold"
       >
         <div> {{ boardName }}</div>
       </v-layout>

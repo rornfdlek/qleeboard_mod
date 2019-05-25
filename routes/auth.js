@@ -112,6 +112,34 @@ router.post('/password/', async (req, res, next) => {
 
 // 비밀번호 변경
 router.put('/password/', async (req, res, next) => {
+  try {
+    const email = req.user._email
+    const userResult = await models.User.findOne({ where: { email_address: email } })
+    const currentPassword = req.body.currentPassword
+    const changePassword = req.body.changePassword
+    const salt = userResult.dataValues.salt
+    const hashPassword = crypto.createHash('sha512').update(currentPassword + salt).digest('hex')
+    const changechangePassword = crypto.createHash('sha512').update(changePassword + salt).digest('hex')
+
+    if (hashPassword === userResult.dataValues.password) {
+      const changeResult = await models.User.update(
+        { password: changechangePassword },
+        { where: { email_address: email } }
+      )
+      res.json({
+        result: 'success'
+      })
+    } else {
+      res.status(205).json({
+        message: '현재 비밀번호가 틀렸습니다'
+      })
+    }
+  } catch (e) {
+    res.status(403).json({
+      message: 'error',
+      error: e.message
+    })
+  }
 })
 
 module.exports = router

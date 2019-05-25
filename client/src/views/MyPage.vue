@@ -2,7 +2,7 @@
   <v-app>
     <v-toolbar
       app
-      height="30"
+      height="40"
       class="back-white"
     >
       <v-layout

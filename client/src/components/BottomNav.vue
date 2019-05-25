@@ -3,6 +3,7 @@
     :active="bottomNavValue"
     :value="true"
     absolute
+    fixed
     color="transparent"
   >
     <v-btn

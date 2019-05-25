@@ -52,6 +52,16 @@
               <v-list-tile-content>
                 <v-list-tile-title
                   class="body-2"
+                  @click="changePasswordDialog = true"
+                >
+                  비밀번호 변경
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title
+                  class="body-2"
                   @click="logOut"
                 >
                   로그아웃
@@ -146,6 +156,59 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="changePasswordDialog"
+    >
+      <v-card>
+        <v-card-title
+          class="title"
+          primary-title
+        >
+          닉네임 변경
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="myPassword"
+            label="현재 비밀번호"
+          />
+          <v-text-field
+            v-model="customPassword"
+            label="변경 비밀번호"
+          />
+          <v-alert
+            :value="wrongCurrentPassword"
+            type="error"
+          >
+            현재 비밀번호가 틀렸습니다
+          </v-alert>
+          <v-alert
+            :value="successChangePassword"
+            type="success"
+          >
+            비밀 번호 변경에 성공했습니다
+          </v-alert>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            flat
+            @click="changeNickDialog = false"
+          >
+            취소
+          </v-btn>
+          <v-btn
+            color="primary"
+            flat
+            @click="changePassword"
+          >
+            변경
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -155,7 +218,12 @@ export default {
     changeNickDialog: false,
     customNickname: '',
     deleteUserDialog: false,
-    duplicatedNickname: false
+    duplicatedNickname: false,
+    wrongCurrentPassword: false,
+    changePasswordDialog: false,
+    successChangePassword: false,
+    myPassword: '',
+    customPassword: ''
   }),
   computed: {
     userNickname () {
@@ -174,6 +242,24 @@ export default {
       localStorage.removeItem('QLee_token')
       this.$http.defaults.headers.common['x-access-qlee-token'] = ''
       this.$router.push('/')
+    },
+    async changePassword () {
+      try {
+        const result = await this.$http.put('/api/auth/password', { currentPassword: this.myPassword, changePassword: this.customPassword })
+        if (result.status === 205) {
+          this.wrongCurrentPassword = true
+          await setTimeout(() => { this.wrongCurrentPassword = false }, 3000)
+          return
+        } else {
+          this.successChangePassword = true
+          await setTimeout(() => {
+            this.successChangePassword = false
+            this.changePasswordDialog = false
+          }, 2000)
+        }
+      } catch (e) {
+        console.log(e)
+      }
     },
     async changeNickname () {
       try {

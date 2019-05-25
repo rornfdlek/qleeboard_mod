@@ -13,7 +13,7 @@
       />
       <v-flex
         xs12
-        md6
+        md8
       >
         <v-card class="border-round">
           <v-list dense>
@@ -36,7 +36,7 @@
       </v-flex>
       <v-flex
         xs12
-        md6
+        md8
       >
         <div class="text-xs-center pt-2">
           <v-pagination

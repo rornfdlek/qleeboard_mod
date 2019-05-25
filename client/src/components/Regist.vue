@@ -23,6 +23,7 @@
             <v-text-field
               v-model="regEmail"
               label="이메일"
+              :rules="[rules.email]"
               required
             />
             <v-text-field
@@ -83,10 +84,22 @@ export default {
     regEmail: '',
     regPassword: '',
     regPasswordConfirm: '',
-    regNickname: ''
+    regNickname: '',
+    rules: {
+      required: value => !!value || 'Required.',
+      counter: value => value.length <= 20 || 'Max 20 characters',
+      email: value => {
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || '유효하지 않은 이메일입니다.'
+      }
+    }
   }),
   methods: {
     RegistUser: function () {
+      if (this.rules.email(this.regEmail)) {
+        alert('올바른 이메일을 입력해주세요')
+        return
+      }
       if (this.regPassword !== this.regPasswordConfirm) {
         alert('비밀번호를 일치 시켜주세요')
         return

@@ -89,6 +89,7 @@
         </v-list>
       </v-flex>
       <v-flex
+        v-if="$store.getters.getIsLogin"
         xs12
         md6
         px-2
@@ -99,6 +100,23 @@
           full-width
           box
           label="댓글을 입력하세요"
+          append-icon="send"
+          @click:append="sendComments"
+        />
+      </v-flex>
+      <v-flex
+        v-else
+        xs12
+        md6
+        px-2
+        mt-2
+      >
+        <v-text-field
+          full-width
+          box
+          value="댓글을 달려면 로그인하세요"
+          readonly
+          @click="$router.push('/login')"
           append-icon="send"
           @click:append="sendComments"
         />
@@ -173,14 +191,16 @@ export default {
         'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) + '-' + (d.getDate() > 9 ? '' : '0') + d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') + d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') + d.getMinutes() + ':' + (d.getSeconds() > 9 ? '' : '0') + d.getSeconds(),
         'formatted': ''
       }
-
-      if (minsAgo < 60) { // 1시간 내
+      if (minsAgo < 1) {
+        result.formatted = '방금'
+      }
+      else if (minsAgo < 60) { // 1시간 내
         result.formatted = minsAgo + '분 전'
       } else if (minsAgo < 60 * 24) { // 하루 내
         result.formatted = Math.floor(minsAgo / 60) + '시간 전'
       } else { // 하루 이상
         result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전'
-      };
+      }
 
       return result.formatted
     }
