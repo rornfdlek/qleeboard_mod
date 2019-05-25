@@ -5,7 +5,10 @@ node_modules
 config/config.json
 
 # imagesFile
-upload/*
+upload/*.jpg
+upload/*.png
+upload/*.bmp
+upload/*.jpeg
 
 # Log files
 npm-debug.log*
