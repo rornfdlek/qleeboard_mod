@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mb-5">
     <v-layout
       wrap
       row
@@ -195,7 +195,7 @@
           <v-btn
             color="primary"
             flat
-            @click="changeNickDialog = false"
+            @click="changePasswordDialog = false"
           >
             취소
           </v-btn>

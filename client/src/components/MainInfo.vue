@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mb-5">
     <v-layout
       v-if="summaryDatas"
       wrap
@@ -15,7 +15,10 @@
       >
         <v-card class="border-round">
           <v-list dense>
-            <v-subheader class="font-weight-bold primary--text">
+            <v-subheader
+              class="font-weight-bold primary--text"
+              @click="$router.push('/board/' + items.boardId)"
+            >
               {{ items.boardName }}
             </v-subheader>
             <template v-for="(item, index) in items.postDatas">

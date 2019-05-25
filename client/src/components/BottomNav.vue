@@ -4,7 +4,7 @@
     :value="true"
     fixed
     class="fixed-bottom"
-    color="transparent"
+    color="white"
   >
     <v-btn
       color="primary"

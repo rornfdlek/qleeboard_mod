@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mb-5">
     <v-layout
       wrap
       justify-center
