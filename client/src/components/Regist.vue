@@ -1,0 +1,129 @@
+<template>
+  <v-container pa-0>
+    <v-layout
+      row
+      align-center
+      justify-center
+    >
+      <v-flex
+        xs12
+        md6
+      >
+        <v-card>
+          <v-layout
+            align-center
+            justify-center
+            column
+          >
+            <v-card-title>
+              <span class="title mt-2">회원가입</span>
+            </v-card-title>
+          </v-layout>
+          <v-card-text class="px-4 pb-0">
+            <v-text-field
+              v-model="regEmail"
+              label="이메일"
+              required
+            />
+            <v-text-field
+              v-model="regNickname"
+              label="닉네임"
+              required
+            />
+            <v-text-field
+              v-model="regPassword"
+              label="비밀번호"
+              type="password"
+              required
+            />
+            <v-text-field
+              v-model="regPasswordConfirm"
+              label="비밀번호 확인"
+              type="password"
+              required
+            />
+          </v-card-text>
+          <v-layout
+            column
+            class="px-3"
+          >
+            <v-btn
+              class="my-0"
+              dark
+              color="primary"
+              @click="RegistUser"
+            >
+              회원가입
+            </v-btn>
+            <div
+              class="subheading my-3"
+              style="text-align: center"
+            >
+              가입 버튼을 누르면 <br>이용약관이 동의 처리됩니다.
+            </div>
+            <v-btn
+              class="mt-0 mb-3"
+              color="black"
+              flat
+              @click="goBack"
+            >
+              취소
+            </v-btn>
+          </v-layout>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+</template>
+
+<script>
+export default {
+  name: 'Regist',
+  data: () => ({
+    regEmail: '',
+    regPassword: '',
+    regPasswordConfirm: '',
+    regNickname: ''
+  }),
+  methods: {
+    RegistUser: function () {
+      if (this.regPassword !== this.regPasswordConfirm) {
+        alert('비밀번호를 일치 시켜주세요')
+        return
+      }
+      this.$http.post(`/api/sign/up`, {
+        email_address: this.regEmail,
+        password: this.regPassword,
+        user_nickname: this.regNickname
+      })
+        .then((result) => {
+          this.regEmail = ''
+          this.regPassword = ''
+          this.regPasswordConfirm = ''
+          this.regNickname = ''
+          this.setLogin(result)
+        })
+        .catch(() => {
+          alert('등록에 실패하였습니다.')
+        })
+    },
+    setLogin: function (result) {
+      localStorage.setItem('QLee_token', result.data.token)
+      const userData = {
+        userEmail: result.data.email_address,
+        userNickname: result.data.user_nickname,
+        mod: result.data.mod
+      }
+      this.$http.defaults.headers.common['x-access-qlee-token'] = localStorage.getItem('QLee_token')
+      this.$store.commit('Login', userData)
+      this.goBack()
+    },
+    goBack () {
+      this.$router.go(-2)
+    }
+  }
+}
+</script>
+
+<style scoped>
+</style>
