@@ -29,18 +29,21 @@
             <v-text-field
               v-model="regNickname"
               label="닉네임"
+              :rules="[rules.required]"
               required
             />
             <v-text-field
               v-model="regPassword"
               label="비밀번호"
               type="password"
+              :rules="[rules.required]"
               required
             />
             <v-text-field
               v-model="regPasswordConfirm"
               label="비밀번호 확인"
               type="password"
+              :rules="[rules.required]"
               required
             />
           </v-card-text>
@@ -86,22 +89,30 @@ export default {
     regPasswordConfirm: '',
     regNickname: '',
     rules: {
-      required: value => !!value || 'Required.',
+      required: value => !!value || '필수 입력 값입니다',
       counter: value => value.length <= 20 || 'Max 20 characters',
       email: value => {
         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        return pattern.test(value) || '유효하지 않은 이메일입니다.'
+        return pattern.test(value) || '유효하지 않은 이메일입니다'
       }
     }
   }),
   methods: {
     RegistUser: function () {
-      if (this.rules.email(this.regEmail)) {
+      if (!this.rules.email(this.regEmail) || this.rules.email(this.regEmail) === '유효하지 않은 이메일입니다') {
         alert('올바른 이메일을 입력해주세요')
         return
       }
       if (this.regPassword !== this.regPasswordConfirm) {
         alert('비밀번호를 일치 시켜주세요')
+        return
+      }
+      if (this.regNickname === '') {
+        alert('닉네임을 입력하세요')
+        return
+      }
+      if (this.regPassword === '') {
+        alert('비밀번호를 입력하세요')
         return
       }
       this.$http.post(`/api/sign/up`, {
