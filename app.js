@@ -4,8 +4,14 @@ let path = require('path')
 let cookieParser = require('cookie-parser')
 let logger = require('morgan')
 let config = require('./config/config.json')
+let history = require('connect-history-api-fallback')
 
 let app = express()
+
+// use history mode setting
+app.use(history({
+  verbose: true
+}))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
