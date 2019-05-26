@@ -8,6 +8,7 @@ import Post from '@/views/Post'
 import MyPage from '@/views/MyPage'
 import Login from '@/views/Login'
 import Regist from '@/views/Regist'
+import NotFound from '@/views/NotFound'
 import store from '@/store'
 
 const requireAuth = () => (from, to, next) => {
@@ -71,6 +72,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    }
+    },
+    { path: '*', component: NotFound } // 404 not found
   ]
 })
