@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mb-5">
+  <v-container class="mb-5 px-0">
     <v-layout
       wrap
       justify-center
@@ -15,7 +15,7 @@
         xs12
         md6
       >
-        <v-card class="border-round">
+        <v-card>
           <v-list dense>
             <template v-for="(boardData, index) in boardDatas">
               <v-list-tile

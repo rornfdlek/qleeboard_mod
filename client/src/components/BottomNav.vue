@@ -9,21 +9,19 @@
     <v-btn
       color="primary"
       flat
+      value="board"
+      @click="goPage('/board/list')"
+    >
+      <v-icon>chat</v-icon>
+    </v-btn>
+    <v-btn
+      color="primary"
+      flat
       value="main"
       @click="goPage('/')"
     >
       <v-icon>home</v-icon>
     </v-btn>
-
-    <v-btn
-      color="primary"
-      flat
-      value="board"
-      @click="goPage('/board/list')"
-    >
-      <v-icon>list</v-icon>
-    </v-btn>
-
     <v-btn
       color="primary"
       flat

@@ -1,25 +1,28 @@
 <template>
-  <v-container class="mb-5">
+  <v-container class="mb-5 px-0">
     <v-layout
       v-if="summaryDatas"
       wrap
       row
+      justify-center
     >
       <v-flex
         v-for="(items, i) in summaryDatas"
         :key="i"
         xs12
-        md6
+        md8
         mb-3
-        px-3
+        px-0
       >
-        <v-card class="border-round">
+        <v-card>
           <v-list dense>
             <v-subheader
-              class="font-weight-bold primary--text"
+              class="font-weight-bold primary--text subheading"
               @click="$router.push('/board/' + items.boardId)"
             >
               {{ items.boardName }}
+              <v-spacer></v-spacer>
+              <v-icon class="primary--text">keyboard_arrow_right</v-icon>
             </v-subheader>
             <template v-for="(item, index) in items.postDatas">
               <v-list-tile
@@ -80,7 +83,7 @@ export default {
     },
     async getPostList () {
       for (let board of this.summaryDatas) {
-        const res = await this.$http.get('/api/board/post/list/' + board.boardId + '?limit=5')
+        const res = await this.$http.get('/api/board/' + board.boardId + '/post/list/' + '?limit=5')
         const datas = res.data.result.rows
         this.setPostList(board, datas)
       }

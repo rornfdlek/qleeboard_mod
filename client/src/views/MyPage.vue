@@ -3,11 +3,11 @@
     <v-toolbar
       app
       height="40"
-      class="back-white"
+      color="primary"
     >
       <v-layout
         justify-center
-        class="title primary--text font-weight-bold"
+        class="title white--text font-weight-bold"
       >
         <div> 내 정보</div>
       </v-layout>

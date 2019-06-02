@@ -21,13 +21,15 @@ const vueInit = () => {
   }).$mount('#app')
 }
 
+// 로그인 먼저 처리
 if (localStorage.getItem('QLee_token')) {
-  axios.get('/api/sign/jwt')
+  axios.post('/api/sign/jwt')
     .then((result) => {
       const userData = {
         userEmail: result.data.email_address,
         userNickname: result.data.user_nickname,
-        mod: result.data.is_admin ? 1 : 2
+        userSrl: result.data.user_srl,
+        mod: result.data.mod
       }
       store.commit('Login', userData)
       vueInit()

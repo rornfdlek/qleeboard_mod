@@ -20,7 +20,8 @@
     "host": "",
     "dialect": ""
   },
-  "JWT-SECRET": "",
+  "JWT_SECRET": "",
   "GMAIL_ID": "",
-  "GMAIL_PASSWORD": ""
+  "GMAIL_PASSWORD": "",
+  "ADMIN_PASSWORD": ""
 }

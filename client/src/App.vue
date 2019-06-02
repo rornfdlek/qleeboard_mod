@@ -26,6 +26,10 @@ export default {
     border-radius: 15px;
   }
 
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
   .custom-divider{
     width: 85%;
     height: 1px;

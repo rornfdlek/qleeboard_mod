@@ -29,10 +29,16 @@ app.use('/upload', express.static('upload'))
 const apiRouter = require('./routes/api')
 
 // jwtauth를 위한 세팅
-const secretkey = config['JWT-SECRET']
+const secretkey = config['JWT_SECRET']
+
+// admin password
+const adminPW = config['ADMIN_PASSWORD']
 
 // set the secret key variable for jwt
 app.set('jwt-secret', secretkey)
+
+// set the secret key variable admin
+app.set('admin-password', adminPW)
 
 app.use('/api', apiRouter)
 

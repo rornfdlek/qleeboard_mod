@@ -147,6 +147,7 @@ export default {
       const userData = {
         userEmail: result.data.email_address,
         userNickname: result.data.user_nickname,
+        userSrl: result.data.user_srl,
         mod: result.data.mod
       }
       this.$http.defaults.headers.common['x-access-qlee-token'] = localStorage.getItem('QLee_token')
@@ -170,7 +171,6 @@ export default {
           this.findEmail = ''
           this.findPasswordDialog = false
         }, 1000)
-
       } catch (e) {
         alert('에러 발생')
       }

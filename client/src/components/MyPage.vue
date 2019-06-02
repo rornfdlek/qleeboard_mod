@@ -1,20 +1,17 @@
 <template>
-  <v-container class="mb-5">
+  <v-container class="mb-5 px-0">
     <v-layout
       wrap
       row
       justify-center
-      class="mt-3"
     >
       <v-flex
         xs12
-        md6
-        my-2
-        pa-1
+        md8
+        px-0
       >
         <v-card
           mb-3
-          class="border-round"
         >
           <v-card-title class="pa-1 pl-3 pt-3 subheading font-weight-bold primary--text">
             {{ userNickname }}
@@ -26,13 +23,12 @@
       </v-flex>
       <v-flex
         xs12
-        md6
+        md8
         my-2
-        pa-1
+        px-0
       >
         <v-card
           my-3
-          class="border-round"
         >
           <v-list>
             <v-subheader>
@@ -275,7 +271,7 @@ export default {
           await setTimeout(() => { this.duplicatedNickname = false }, 3000)
           return
         }
-        const result = await this.$http.get('/api/sign/jwt')
+        const result = await this.$http.post('/api/sign/jwt')
         localStorage.setItem('QLee_token', result.data.token)
         const userData = {
           userEmail: result.data.email_address,

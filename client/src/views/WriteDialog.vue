@@ -29,6 +29,7 @@
           <v-toolbar
             dark
             color="primary"
+            height="40"
           >
             <v-btn
               icon
@@ -203,12 +204,10 @@ export default {
       EventBus.$emit('get-new-data')
       this.writeView = false
     },
-    saveAndCloseDialog: function () {
+    async saveAndCloseDialog () {
       this.writeForm.userId = this.userEmail
-      this.$http.post('/api/board', this.writeForm)
-        .then((response) => {
-          this.closeWriteDialog()
-        })
+      await this.$http.post('/api/board', this.writeForm)
+      this.closeWriteDialog()
     },
     uploadImages: function (name, files) {
       const formData = new FormData()
@@ -229,7 +228,6 @@ export default {
     async getBoardData () {
       const res = await this.$http.get('/api/board/list')
       const datas = res.data.result.rows
-      console.log(datas)
       this.setBoardData(datas)
     },
     setBoardData (datas) {

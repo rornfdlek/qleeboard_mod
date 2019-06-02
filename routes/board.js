@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const models = require('../models')
+const Op = models.Sequelize.Op
 
 // board list
 router.get('/list', async (req, res, next) => {
@@ -37,14 +38,66 @@ router.get('/:id', async (req, res, next) => {
 })
 
 // post list
-router.get('/post/list/:id', async (req, res, next) => {
+router.get('/:board_id/post/list', async (req, res, next) => {
   try {
-    const boardId = req.params.id
+    const boardId = req.params.board_id
     const limit = req.query.limit ? req.query.limit * 1 : 10000
+    const pageno = req.query.page ? req.query.page : 1
+    const pageoffset = limit * (pageno - 1)
+    const where = [{ board_id: boardId }]
+    if (req.query.searchKeyword) {
+      const searchKeyword = req.query.searchKeyword.split(' ')
+      for (let keyword of searchKeyword) {
+        let searchSubjectKey = {}
+        searchSubjectKey = { subject: { [Op.like]: '%' + keyword + '%' } }
+        let searchContentsKey = {}
+        searchContentsKey = { contents: { [Op.like]: '%' + keyword + '%' } }
+        const opOr = { [Op.or]: [searchSubjectKey, searchContentsKey] }
+        where.push(opOr)
+      }
+    }
     const result = await models.Post.findAndCountAll({
       order: [['id', 'DESC']],
       limit: limit,
-      where: { board_id: boardId }
+      offset: pageoffset,
+      where: where
+    })
+    res.json({
+      result,
+      message: 'success'
+    })
+  } catch (e) {
+    console.log(e)
+    res.json({
+      message: 'fail'
+    })
+  }
+})
+
+// post list
+router.get('/post/list/:board_id', async (req, res, next) => {
+  try {
+    const boardId = req.params.board_id
+    const limit = req.query.limit ? req.query.limit * 1 : 10000
+    const pageno = req.query.page ? req.query.page : 1
+    const pageoffset = limit * (pageno - 1)
+    const where = [{ board_id: boardId }]
+    if (req.query.searchKeyword) {
+      const searchKeyword = req.query.searchKeyword.split(' ')
+      for (let keyword of searchKeyword) {
+        let searchSubjectKey = {}
+        searchSubjectKey = { subject: { [Op.like]: '%' + keyword + '%' } }
+        let searchContentsKey = {}
+        searchContentsKey = { contents: { [Op.like]: '%' + keyword + '%' } }
+        const opOr = { [Op.or]: [searchSubjectKey, searchContentsKey] }
+        where.push(opOr)
+      }
+    }
+    const result = await models.Post.findAndCountAll({
+      order: [['id', 'DESC']],
+      limit: limit,
+      offset: pageoffset,
+      where: where
     })
     res.json({
       result,
@@ -154,9 +207,9 @@ router.get('/list/:boardId/', function (req, res, next) {
 
 function insertImages (images, postId) {
   // new Promise() 추가
-  return new Promise(function (resolve, reject) {
+  return new Promise(async (resolve, reject) => {
     for (let image of images) {
-      models.Image.create({
+      await models.Image.create({
         post_id: postId,
         img_url: image
       })
@@ -283,52 +336,93 @@ router.post('/comments/:post_id', function (req, res, next) {
   })
 })
 
-// 이제 안쓰는 부분
-const boardTypeChecker = (boardType) => {
-  if (boardType === 'checking') return 0
-  else if (boardType === 'checked') return 1
-  else return 0
-}
+// DELETE 게시글 삭제
+router.delete('/post/:post_id', async (req, res, next) => {
+  try {
+    const params = req.params
+    const postId = params.post_id
 
-const summaryBoard = () => {
-  return new Promise((resolve, reject) => {
-    models.Board.findAll({
-      limit: 5
-    })
-      .then(result => {
-        resolve(JSON.parse(JSON.stringify(result)))
+    const user = req.user
+
+    const postData = await models.Post.findByPk(postId)
+    if (postData.getDataValue('user_srl') !== user._srl && user.mod !== 1) {
+      res.status(403).json({
+        message: 'auth error'
       })
-  })
-}
-
-const summaryPosts = (boardId) => {
-  return new Promise((resolve, reject) => {
-    models.Post.findAll({
-      limit: 10,
-      where: {
-        board_id: boardId
-      }
-    })
-      .then(result => {
-        resolve(JSON.parse(JSON.stringify(result)))
-      })
-  })
-}
-
-const buildSummaryObject = (boardData) => {
-  return new Promise((resolve, reject) => {
-    let result = {
-      boardName: '',
-      postData: []
+      return
     }
-    result.boardName = boardData.name
-    summaryPosts(boardData.id)
-      .then(res => {
-        result.boardName = boardData.name
-        result.postData = res
-        resolve(result)
+
+    const result = await models.Post.destroy({ where: { id: postId } })
+    res.json({
+      message: '게시글 삭제에 성공했습니다'
+    })
+  } catch (e) {
+    res.status(403).json({
+      message: '게시글 삭제에 실패했습니다',
+      error: e.message
+    })
+  }
+})
+
+// DELETE 댓글 삭제
+router.delete('/comment/:comment_id', async (req, res, next) => {
+  try {
+    const params = req.params
+    const commentId = params.comment_id
+    const user = req.user
+
+    const postData = await models.PostComment.findByPk(commentId)
+    if (postData.getDataValue('user_srl') !== user._srl && user.mod !== 1) {
+      res.status(403).json({
+        message: 'auth error'
       })
-  })
-}
+      return
+    }
+
+    const result = await models.PostComment.destroy({ where: { id: commentId } })
+
+    await models.Post.update(
+      { comments_count: models.sequelize.literal('comments_count - 1') },
+      { where: { id: postData.getDataValue('post_id') } }
+    )
+
+    res.json({
+      message: '댓글 삭제에 성공했습니다'
+    })
+  } catch (e) {
+    res.status(403).json({
+      message: '댓글 삭제에 실패했습니다',
+      error: e.message
+    })
+  }
+})
+
+// DELETE 게시판 삭제
+router.delete('/:board_id', async (req, res, next) => {
+  try {
+    const params = req.params
+    const boardId = params.board_id
+
+    const user = req.user
+
+    const postData = await models.Board.findByPk(boardId)
+    if (user.mod !== 1) {
+      res.status(403).json({
+        message: 'auth error'
+      })
+      return
+    }
+
+    const result = await models.Board.destroy({ where: { id: boardId } })
+    res.json({
+      message: '게시판 삭제에 성공했습니다'
+    })
+  } catch (e) {
+    res.status(403).json({
+      message: '게시판 삭제에 실패했습니다',
+      error: e.message
+    })
+  }
+})
 
 module.exports = router

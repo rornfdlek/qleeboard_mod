@@ -16,23 +16,22 @@
         px-2
         my-3
       >
-        <div class="subheading font-weight-bold">
+        <span class="subheading font-weight-bold">
           {{ postData.user_nickname }}
-        </div>
+        </span>
         <div class="caption grey--text">
           {{ fn_dateTimeToFormatted(postData.createdAt) }}
         </div>
         <div class="title mt-2 mb-1 font-weight-bold">
           {{ postData.subject }}
         </div>
-        <div class="mt-3">
+        <div class="mt-3 px-2">
           <v-img
             v-for="(image,i) in images"
             :key="i"
             :src="image.img_url"
             :lazy-src="image.img_url"
             contain
-            height="150"
           >
             <template v-slot:placeholder>
               <v-layout
@@ -66,7 +65,7 @@
         md8
         px-2
       >
-        <v-list dense>
+        <v-list dense v-if="comments.data.length > 0">
           <template v-for="(comment, index) in comments.data">
             <v-divider
               v-if="index !== 0"
@@ -102,6 +101,7 @@
           label="댓글을 입력하세요"
           append-icon="send"
           @click:append="sendComments"
+          @keypress.enter.prevent="sendComments"
         />
       </v-flex>
       <v-flex
@@ -116,8 +116,8 @@
           box
           value="댓글을 달려면 로그인하세요"
           readonly
-          @click="$router.push('/login')"
           append-icon="send"
+          @click="$router.push('/login')"
           @click:append="sendComments"
         />
       </v-flex>
@@ -193,8 +193,7 @@ export default {
       }
       if (minsAgo < 1) {
         result.formatted = '방금'
-      }
-      else if (minsAgo < 60) { // 1시간 내
+      } else if (minsAgo < 60) { // 1시간 내
         result.formatted = minsAgo + '분 전'
       } else if (minsAgo < 60 * 24) { // 하루 내
         result.formatted = Math.floor(minsAgo / 60) + '시간 전'

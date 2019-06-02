@@ -8,6 +8,7 @@ export default new Vuex.Store({
     isLogin: false,
     userEmail: '',
     userNickname: '',
+    userSrl: -1,
     mod: 3
   },
   getters: {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     getUserNickname (state) {
       return state.userNickname
+    },
+    getUserSrl (state) {
+      return state.userSrl
     }
   },
   mutations: {
@@ -29,11 +33,14 @@ export default new Vuex.Store({
       state.isLogin = true
       state.userEmail = payload.userEmail
       state.userNickname = payload.userNickname
+      state.userSrl = payload.userSrl
       state.mod = payload.mod
     },
     delUser (state) {
       state.isLogin = false
       state.userEmail = ''
+      state.userNickname = ''
+      state.userSrl = -1
       state.mod = 3
     }
   },

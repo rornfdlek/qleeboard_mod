@@ -50,6 +50,7 @@ router.use('/board', require('./board'))
 router.use('/auth', require('./auth'))
 router.use('/user', require('./user'))
 router.use('/sign', require('./sign'))
+router.use('/admin', require('./admin'))
 router.use('/upload', require('./upload'))
 
 module.exports = router

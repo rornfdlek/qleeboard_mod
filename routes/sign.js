@@ -66,29 +66,34 @@ router.post('/in', (req, res, next) => {
     })
 })
 
-// POST 회원 로그인
-router.get('/jwt', async (req, res, next) => {
-  const user = req.user
+// POST jwt 회원 로그인
+router.post('/jwt', async (req, res, next) => {
+  try {
+    const user = req.user
+    const result = await models.User.findOne({ where: { email_address: user._email } })
+    const secret = req.app.get('jwt-secret')
 
-  const result = await models.User.findOne({ where: { email_address: user._email } })
-  const secret = req.app.get('jwt-secret')
-
-  const token = await returnJwt(result, secret)
-  res.json({
-    user_srl: result.dataValues.user_srl,
-    user_nickname: result.dataValues.user_nickname,
-    email_address: result.dataValues.email_address,
-    mod: result.dataValues.is_admin ? 1 : 2,
-    message: '로그인에 성공했습니다',
-    token
-  })
+    const token = await returnJwt(result, secret)
+    res.json({
+      user_srl: result.dataValues.user_srl,
+      user_nickname: result.dataValues.user_nickname,
+      email_address: result.dataValues.email_address,
+      mod: result.dataValues.is_admin ? 1 : 2,
+      message: '로그인에 성공했습니다',
+      token
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(403).json({
+      message: '자동로그인에 실패했습ㄴ디ㅏ',
+      error: err.message
+    })
+  }
 })
 
 // POST 유저 등록
 router.post('/up', (req, res, next) => {
   const body = req.body
-
-  console.log(body)
 
   const secret = req.app.get('jwt-secret')
   const inputPassword = body.password
@@ -105,7 +110,7 @@ router.post('/up', (req, res, next) => {
     returnJwt(result, secret)
       .then((token) => {
         res.json({
-          user_id: result.dataValues.user_id,
+          user_srl: result.dataValues.user_srl,
           user_nickname: result.dataValues.user_nickname,
           email_address: result.dataValues.email_address,
           mod: result.dataValues.is_admin ? 1 : 2,
@@ -127,20 +132,19 @@ router.post('/up/google', (req, res, next) => {
 })
 
 // DELETE 회원 삭제
-router.delete('/out', (req, res, next) => {
+router.delete('/out', async (req, res, next) => {
   try {
     const user = req.user
-    const result = models.User.destroy({ where: { email_address: user._email } })
+    const result = await models.User.destroy({ where: { email_address: user._email } })
     res.json({
       message: '회원 탈퇴에 성공했습니다'
     })
-  }catch (e) {
+  } catch (e) {
     res.status(403).json({
       message: '회원 탈퇴에 실패했습니다',
       error: e.message
     })
   }
-
 })
 
 module.exports = router

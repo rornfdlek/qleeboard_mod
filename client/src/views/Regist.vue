@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-content class="back-white">
+    <v-content>
       <regist />
     </v-content>
   </v-app>

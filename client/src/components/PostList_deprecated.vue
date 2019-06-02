@@ -67,26 +67,28 @@ export default {
     page: 1,
     rowsPerPage: 10, // -1 for All
     totalPage: 0,
-    postList: []
+    postList: [],
+    searchKeyword: '',
+    isSearching: false
   }),
   computed: {
   },
   watch: {
     async page (to, from) {
       this.progressCircle = true
-      const res = await this.getPostList()
+      const res = await this.getPostList(this.isSearching)
       this.setPostList(res)
       this.progressCircle = false
     }
   },
   async created () {
-    const res = await this.getPostList()
+    const res = await this.getPostList(this.isSearching)
     this.setPostList(res)
     this.progressCircle = false
 
     EventBus.$on('get-new-data', async () => {
       try {
-        const res = await this.getPostList()
+        const res = await this.getPostList(this.isSearching)
         this.setPostList(res)
       } catch (e) {
         console.log(e)
@@ -94,15 +96,23 @@ export default {
     })
   },
   methods: {
-    async getPostList () {
+    async getPostList (isSearching) {
       const boardId = this.$route.params.id
-      const res = this.$http.get('/api/board/list/' + boardId + '?page=' + this.page + '&offset=' + this.rowsPerPage)
+      let searchKey = ''
+      if (isSearching) searchKey = '&searchKey=' + this.searchKeyword
+      const res = this.$http.get('/api/board/' + boardId + '/post/list' + '?page=' + this.page + '&limit=' + this.rowsPerPage + searchKey)
       return res
     },
     setPostList (res) {
       this.postList = res.data.result.rows
       const alpha = parseInt(res.data.result.count % this.rowsPerPage) === 0 ? 0 : 1
       this.totalPage = parseInt(res.data.result.count / this.rowsPerPage) + alpha
+    },
+    async goSearch() {
+      this.progressCircle = true
+      const res = await this.getPostList(this.isSearching)
+      this.setPostList(res)
+      this.progressCircle = false
     }
   }
 }
