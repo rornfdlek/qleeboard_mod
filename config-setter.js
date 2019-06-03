@@ -70,6 +70,20 @@ const inputData = {
     host: '',
     dialect: ''
   },
+  development: {
+    username: '',
+    password: '',
+    database: '',
+    host: '',
+    dialect: ''
+  },
+  test: {
+    username: '',
+    password: '',
+    database: '',
+    host: '',
+    dialect: ''
+  },
   JWT_SECRET: '',
   GMAIL_ID: '',
   GMAIL_PASSWORD: '',
@@ -91,7 +105,7 @@ const func = async () => {
 
   console.log(inputData)
 
-  fs.writeFile('./config/config.json', JSON.stringify(inputData), function (err) {
+  fs.writeFile('./config/config_test.json', JSON.stringify(inputData), function (err) {
     if (err) {
       return console.log(err)
     }
