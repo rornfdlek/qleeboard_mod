@@ -161,7 +161,7 @@
           class="title"
           primary-title
         >
-          닉네임 변경
+          비밀번호 변경
         </v-card-title>
         <v-card-text>
           <v-text-field

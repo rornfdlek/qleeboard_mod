@@ -20,7 +20,7 @@
       value="main"
       @click="goPage('/')"
     >
-      <v-icon>home</v-icon>
+      <v-icon>explore</v-icon>
     </v-btn>
     <v-btn
       color="primary"

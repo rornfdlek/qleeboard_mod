@@ -218,7 +218,37 @@ function insertImages (images, postId) {
   })
 }
 
-router.post('/', function (req, res, next) {
+// POST 게시판 생성
+router.post('/', async (req, res, next) => {
+  try {
+    const body = req.body
+
+    const user = req.user
+
+    if (user.mod !== 1) {
+      res.status(403).json({
+        message: 'auth error'
+      })
+      return
+    }
+
+    await models.Board.create({
+      name: body.boardName,
+      description: body.boardDescription,
+      require_auth: body.requireAuth
+    })
+    res.json({
+      message: '게시판 생성에 성공했습니다'
+    })
+  } catch (e) {
+    res.status(403).json({
+      message: '게시판 생성에 실패했습니다',
+      error: e.message
+    })
+  }
+})
+
+router.post('/post', function (req, res, next) {
   const body = req.body
 
   const images = body.images

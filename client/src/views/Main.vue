@@ -11,6 +11,14 @@
       >
         <div>QLeeBoard</div>
       </v-layout>
+      <v-btn
+        v-if="$store.getters.getMod === 1"
+        icon
+        class="white--text"
+        @click="$router.push('admin')"
+      >
+        <v-icon>supervised_user_circle</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-content>
       <MainInfo />

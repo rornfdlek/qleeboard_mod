@@ -21,8 +21,9 @@
     "mariadb": "^2.0.3",
     "morgan": "~1.9.0",
     "multer": "^1.4.1",
+    "mysql2": "^1.6.5",
     "nodemailer": "^6.2.1",
     "request": "^2.88.0",
-    "sequelize": "^5.3.1"
+    "sequelize": "^5.8.7"
   }
 }

@@ -206,7 +206,7 @@ export default {
     },
     async saveAndCloseDialog () {
       this.writeForm.userId = this.userEmail
-      await this.$http.post('/api/board', this.writeForm)
+      await this.$http.post('/api/board/post', this.writeForm)
       this.closeWriteDialog()
     },
     uploadImages: function (name, files) {
