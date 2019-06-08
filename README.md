@@ -52,3 +52,14 @@ NODE_ENV=production node ./bin/www // localhost:3010에서 확인
 // 포트 변경
 NODE_ENV=production PORT=PORT번호 node ./bin/www // localhost:원하는 포트 번호에서 확인
 ~~~
+
+
+### 관리자 페이지 들어가기
+
+/admin 페이지(로그인 후)
+
+config.json 파일에서 ADMIN_PASSWORD에 설정해놓은 값 입력 -> 관리자 가입
+
+### 주의사항
+
+Docker에서 mysql 8버전으로 띄웠을 시 db접속 실패 문제
