@@ -65,4 +65,4 @@ config.json 파일에서 ADMIN_PASSWORD에 설정해놓은 값 입력 -> 관리�
 Docker에서 mysql 8버전으로 띄웠을 시 db접속 실패 문제
 
 
-해인이
+해인
